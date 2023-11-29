@@ -1,0 +1,32 @@
+import pandas as pd
+import datetime
+
+path = r'C:\Users\BrunoLaertQSOFT\Documents\2. Pessoal\Estudo\Consumo\marketing_campaign.csv'
+dest = r'C:\Users\BrunoLaertQSOFT\Documents\2. Pessoal\Estudo\Consumo\Outputs\campanha.csv'
+df = pd.read_csv(r'C:\Users\BrunoLaertQSOFT\Documents\2. Pessoal\Estudo\Consumo\marketing_campaign.csv', sep=r'\t')
+
+df = df[['ID', 'Year_Birth', 'Education',
+         'Marital_Status', 'Income', 'Complain' ,'Kidhome',
+         'Teenhome', 'Dt_Customer', 'Recency',
+         'MntWines', 'MntFruits', 'MntMeatProducts',
+         'MntFishProducts', 'MntSweetProducts', 'MntGoldProds',
+         'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases',
+         'NumWebVisitsMonth'
+         ]]
+
+static_columns = ['ID', 'Year_Birth', 'Education', 'Marital_Status', 'Income', 'Complain', 'Kidhome', 'Teenhome', 'Dt_Customer', 'Recency']
+df = pd.melt(df, 
+            id_vars=static_columns, 
+            value_vars=['MntWines', 'MntFruits', 'MntMeatProducts', 
+                        'MntFishProducts', 'MntSweetProducts', 'MntGoldProds',                             
+                        'NumWebPurchases', 'NumCatalogPurchases', 'NumStorePurchases', 
+                        'NumWebVisitsMonth'], 
+            var_name='Description', 
+            value_name='Value')
+
+ano_atual = datetime.datetime.now().year
+df['Age'] = ano_atual - df['Year_Birth']
+
+df['Dt_Customer'] = pd.to_datetime(df['Dt_Customer'],format='%d-%m-%Y')
+
+df.to_csv(dest)
